@@ -1,0 +1,30 @@
+{
+  "name": "bot-gemini",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/criperrr/discord-gemini-bot#readme",
+  "bugs": {
+    "url": "https://github.com/criperrr/discord-gemini-bot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/criperrr/discord-gemini-bot.git"
+  },
+  "license": "ISC",
+  "author": "criper",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google/genai": "^1.8.0",
+    "@google/generative-ai": "^0.24.1",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "eslint": "^9.30.1"
+  }
+}
