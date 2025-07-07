@@ -9,7 +9,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.chatSessions = new Map();
 const channel_id = process.env.SERVER_IE_CHANNEL_ID;
 
-client.commands = new Collection();
+client.commands = new Collection(); 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath); // Read folders in ./commands/
 
@@ -30,8 +30,15 @@ for (const folder of commandFolders) {
 client.on('ready', async () => {
 	console.log(`Ready! Logged in as ${client.user.tag}`);
     const guild_debug = client.guilds.cache.get(client);
-    const channel_debug = client.channels.cache.get(channel_id);
-    await channel_debug.send(`I'm alive :D\n`);
+    const channel_debug = client.channels.cache.get(channel_id);    
+    const date = new Date();
+    const time = date.toLocaleDateString('pt-BR');
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    const milliseconds = date.getMilliseconds();
+
+    await channel_debug.send(`I'm alive :D\nStart time: ${time}, ${hours}:${minutes}:${seconds}:${milliseconds}`);
 });
 
 client.on(Events.InteractionCreate, async interaction => {
