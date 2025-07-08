@@ -136,17 +136,35 @@ module.exports = {
                 });
 
                 interaction.client.chatSessions.set(currentSessionId, chatSession);
-                welcomeMessage = '👋 _ Parece ser sua primeira vez por aqui  Criei uma sessão de chat só para voc . Use `/chat reset` para limpa  a minha memória._\n\n'
+                welcomeMessage = '👋 _ Parece ser sua primeira vez por aqui  Criei uma sessão de chat na RAM só para você. Use `/chat reset` para limpa  a minha memória._\n\n'
                 shouldReset = (temperature !== 1.0 || topK !== 32 || topP !== 1.0);
             } 
 
             try {
                 console.log(chatSession);
+                
                 const result = await chatSession.sendMessage({
                     message: userInput,
                 });
                 const response = result.text;
-                await interaction.followUp({content: welcomeMessage + response, split: true} );
+                const limit = 1999;
+                const textSize = response.length;
+                
+                if(textSize >= 2000){
+                    await interaction.followUp(welcomeMessage + response);
+                    return;
+                }
+                const parts = [];
+                for (let i = 0; i < response.length; i += limit) {
+                    parts.push(response.substring(i, i + limit));
+                }
+                
+                await interaction.followUp(parts[0]);
+
+                for (let i = 1; i < parts.length; i++) {
+                    await interaction.channel.send(parts[i]);
+                }
+
                 if(shouldReset){
                     await interaction.followUp({content: "Não da pra alterar os parametros depois que criar o chat. use `/chat reset` e enfim `/chat message {input} {parametros}` para alterar!. Alterações futuras dos parâmetros serão ignorada .", ephemeral: true})
                 }

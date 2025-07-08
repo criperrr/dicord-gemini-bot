@@ -41,32 +41,34 @@ module.exports = {
                         O usuário é capaz de modificar a história através das tags, nesse caso, as tags que deverão ser temas inclusos na história são: [${tags}]. No caso de estar vazia as tags, não as use.
                         Além disso, você deve incluir uma forma de escrita dada pelo usuário: [${escrita}] (caso vazio, faça em forma de narrativa com narrador personagem (sendo ele um dos amantes) onisciente)
                         A história necessariamente precisa ser um romance e necessariamente precisa ser de amor onde relacione esses dois nomes.
-                        Destacando novamente: a história **DEVE** ser **CURTA**! ` 
+                        Destacando novamente: a história **DEVE** ser **CURTA**! 
+                        Mais um adendo: vc, se quiser, pode usar as formatações de texto do discord, tipo **texto** pra colocar em negrito, _texto_ itálico, etc.` 
 
 
         try {
-            const limiteDeCaracteres = 1980;
+            const limit = 1999;
             const result = await ai.models.generateContent({
                 model: "gemini-2.5-flash",
                 contents: request,
             });
             const text = result.text;
 
-            if (text.length <= limiteDeCaracteres) {
+            if (text.length <= limit) {
                 await interaction.followUp(text);
                 return;
             }
+            // Breaks text in different parts to fit in discord limitation
+            const parts = [];
+            for (let i = 0; i < text.length; i += limit) {
+                parts.push(text.substring(i, i + limit));
+            }
+            
+            await interaction.followUp(parts[0]);
 
-            const partes = [];
-            for (let i = 0; i < text.length; i += limiteDeCaracteres) {
-                partes.push(text.substring(i, i + limiteDeCaracteres));
+            for (let i = 1; i < parts.length; i++) {
+                await interaction.channel.send(parts[i]);
             }
 
-            await interaction.followUp(partes[0]);
-
-            for (let i = 1; i < partes.length; i++) {
-                await interaction.channel.send(partes[i]);
-            }
         } catch(error){
             console.error("[Chat Error]", error);
             await interaction.followUp("Ocorreu um erro ao processar sua mensagem. Tente resetar a conversa com `/chat reset`.");
